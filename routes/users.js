@@ -11,6 +11,7 @@ app.use(bodyParser.json());
 var User = require('../models/user');
 
 router.get('/', async (req, res, next) => {
+
     res.send('respond with a resource');
 });
 
@@ -20,15 +21,22 @@ router.get('/register', async (req, res, next) => {
 
 router.post('/register', async (req, res, next) => {
     var { username, password: plainTextPassword } = req.body;
-
+    User.findOne({username}, function(err, user) {
+        if (err) {
+            return res.json({ status: 'error', message: err });
+        } 
+        if (user) {
+            return res.json({ status: 'error', message: 'Username already exists.' });
+        }
+    });
     if (!username || typeof username !== 'string') {
-        return res.json({ status: 'error', message: 'Username must be a series of letters and numbers.' })
+        return res.json({ status: 'error', message: 'Username must be a series of letters and numbers.' });
     }
     if (!plainTextPassword || typeof plainTextPassword !== 'string') {
-        return res.json({ status: 'error', message: 'Password must be a series of letters, numbers and special characters.' })
+        return res.json({ status: 'error', message: 'Password must be a series of letters, numbers and special characters.' });
     }
-    if (plainTextPassword.length < 5) {
-        return res.json({ status: 'error', message: 'Password must be at least 6 characters long.' })
+    if (plainTextPassword.length <= 5) {
+        return res.json({ status: 'error', message: 'Password must be at least 6 characters long.' });
     }
     var password = await bcrypt.hash(plainTextPassword, 10);
 
@@ -38,7 +46,7 @@ router.post('/register', async (req, res, next) => {
             password
         });
     } catch (error) {
-        res.json({ status: 'error', message: error });
+        return res.json({ status: 'error', message: error });
     }
 });
 

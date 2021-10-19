@@ -28,7 +28,15 @@ block content
                     username,
                     password
                 })
-            }).then((res) => res)
+            }).then((res) => res.json())
+            if (result.status === 'ok') {
+                localStorage.setItem('token', result.data);
+                message = result.message;
+                window.location.href = "/";
+            } else {
+                message = result.message;
+                catchMessage();
+            }
         }
         
 

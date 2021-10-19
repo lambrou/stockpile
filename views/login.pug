@@ -28,7 +28,6 @@ block content
                     password
                 })
             }).then((res) => res.json())
-            console.log(result);
             if (result.status === 'ok') {
                 localStorage.setItem('token', result.data);
                 message = result.message;
