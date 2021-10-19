@@ -2,5 +2,10 @@ extends layout
 
 block content    
     div.row
-        h1= title
-        p Welcome to #{title}
+        h1= 'StockPile'
+
+
+    script.
+        window.onload = function () {
+            catchMessage();
+        }

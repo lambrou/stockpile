@@ -1,0 +1,42 @@
+extends layout
+
+block content
+    div.row
+        h1= 'Registration'
+        form#reg-form.reg-form
+            input(type='text', id='username' placeholder='Username' name='username' onkeyup='checkInput();') 
+            br
+            input(type='password' id='password' name='password' placeholder='Password' onkeyup='checkInput();')
+            input(type='password' id='password2' name='password2' placeholder='Confirm Password' onkeyup='checkInput();')
+            input(type='submit' id='submit' name='submit' value='Submit')
+    script.
+        const form = document.getElementById('reg-form')
+        form.addEventListener('submit', registerUser)
+        
+        async function registerUser(event) {
+            event.preventDefault()
+            const username = document.getElementById('username').value
+            const password = document.getElementById('password').value
+            const password2 = document.getElementById('password2').value
+
+            const result = await fetch('/users/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    username,
+                    password
+                })
+            }).then((res) => res)
+        }
+        
+
+
+        var checkInput = function() {
+            if (document.getElementById('username').value.length >= 3 && document.getElementById('password').value == document.getElementById('password2').value) {
+                document.getElementById('submit').disabled = false;
+            } else {
+                document.getElementById('submit').disabled = true;
+            }
+        }

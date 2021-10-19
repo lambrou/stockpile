@@ -1,0 +1,50 @@
+extends layout
+
+block content
+    div.row
+        h1= 'Login'
+        form#login-form.reg-form
+            input(type='text', id='username' name='username' placeholder='Username' onkeyup='checkInput();') 
+            br
+            input(type='password' id='password' name='password' placeholder='Password' onkeyup='checkInput();')
+            input(type='submit' id='submit' name='submit' value='Login')
+    script.
+        var message;
+        const form = document.getElementById('login-form')
+        form.addEventListener('submit', loginUser)
+        
+        async function loginUser(event) {
+            event.preventDefault()
+            const username = document.getElementById('username').value
+            const password = document.getElementById('password').value
+
+            const result = await fetch('/users/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    username,
+                    password
+                })
+            }).then((res) => res.json())
+            console.log(result);
+            if (result.status === 'ok') {
+                localStorage.setItem('token', result.data);
+                message = result.message;
+                window.location.href = "/";
+            } else {
+                message = result.message;
+                catchMessage();
+            }
+        }
+        
+
+
+        var checkInput = function() {
+            if (document.getElementById('username').value.length >= 3) {
+                document.getElementById('submit').disabled = false;
+            } else {
+                document.getElementById('submit').disabled = true;
+            }
+        }
